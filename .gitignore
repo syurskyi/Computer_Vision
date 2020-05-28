@@ -151,3 +151,7 @@ fabric.properties
 /Computer Vision with OpenCV 4/Section 6/models/
 /Computer Vision with OpenCV 4/Section 6/ssd_mobilenet_v1_coco.pbtxt
 /Computer Vision with OpenCV 4/Section 6/frozen_inference_graph.pb
+/Master Computer Vision OpenCV4 in Python with Deep Learning/faces/
+/Master Computer Vision OpenCV4 in Python with Deep Learning/Haarcascades/
+/Master Computer Vision OpenCV4 in Python with Deep Learning/images/
+/Master Computer Vision OpenCV4 in Python with Deep Learning/shape_predictor_68_face_landmarks.dat
