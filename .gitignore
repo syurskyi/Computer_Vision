@@ -146,3 +146,8 @@ fabric.properties
 /Computer Vision with OpenCV 4/Section 5/sign_mnist_train/
 /Computer Vision with OpenCV 4/Section 5/Friends.mp4
 /Computer Vision with OpenCV 4/Section 5/my_gestures_cnn.h5
+/Computer Vision with OpenCV 4/Section 6/art/
+/Computer Vision with OpenCV 4/Section 6/images/
+/Computer Vision with OpenCV 4/Section 6/models/
+/Computer Vision with OpenCV 4/Section 6/ssd_mobilenet_v1_coco.pbtxt
+/Computer Vision with OpenCV 4/Section 6/frozen_inference_graph.pb
