@@ -1,0 +1,21 @@
+<p><strong>Installing OpenCV on a MAC</strong></p><p><br></p><p>NOTE if the following does not work try the method shown here - https://medium.com/@nuwanprabhath/installing-opencv-in-macos-high-sierra-for-python-3-89c79f0a246a</p><p><br></p><p><strong>STEP 1</strong> - Install Xcode</p><ol><li><p>Go to - https://developer.apple.com/xcode/</p></li><li><p>Follow the installation instructions there, should be pretty straight forward to do.</p></li></ol><p><strong> </strong>
+  </p><p><strong>STEP 2</strong> - Install Homebrew</p><p>1.        Open the Terminal, by going to: Applications → Utilities → <strong>Terminal</strong></p><p><em>2.       Type the following lines. Note do not type the red numbers, they are simply line
+  </em></p><pre class="prettyprint linenums">cd ~
+ruby -e "$(curl -fsSL     https://raw.githubusercontent.com/Homebrew/install/master/install)"</pre><p><br></p><p>3.       Homebrew has now been successfully installed. We can run an update by doing:</p><p><code><em>brew install python</em></code><em> </em></p><p><br></p><p><strong>STEP 3 - Install the Anaconda Python Package</strong></p><p>1.       Go to: https://www.continuum.io/downloads
+  </p><p>2.       Select the OSX installer (choose python 2.7, we can use Python 3.5, however most python libraries are not yet compatible with python 2.7(
+  </p><p>3.       Follow the Installation instructions, should be pretty standard, however Continuum has a guide here: https://docs.continuum.io/anaconda/install
+  </p><p>4.       Anaconda which includes Python and lots of useful libraries is now installed. 
+  </p><p><strong><br></strong></p><p><strong>STEP 4A – Install OpenCV 2.4.13</strong></p><p>1.       Go to terminal window and type the following:
+  </p><p>2.       Type the following lines:</p><pre class="prettyprint linenums">brew tap homebrew/science
+brew install opencv</pre><p><br></p><p><strong>NOTE</strong>: Your OpenCV installation files will be downloaded and installed here:</p><p><em>              /usr/local/Cellar/opencv/2.4.13/</em>
+  </p><p>3.       Set up Python by creating symlinks.
+  </p><pre class="prettyprint linenums">cd /Library/Python/2.7/site-packages/
+ln -s   /usr/local/Cellar/opencv/2.4.13/lib/python2.7/site-packages/cv.py cv.py
+ln -s /usr/local/Cellar/opencv/2.4.13/lib/python2.7/site-packages/cv2.so   cv2.so</pre><p><strong><br></strong></p><p><strong>OR</strong></p><p><strong><br></strong></p><p><strong>STEP 4B – Install OpenCV 3.0.0 (RECOMMENDED)</strong> </p><p>1.       Go to terminal window and type the following:
+  </p><p>2.       Type the following lines:
+  </p><pre class="prettyprint linenums">brew   tap homebrew/science
+brew install opencv3 --with-contrib –-with-ffmpeg  </pre><p><br></p><p>3.       That’s it, OpenCV 3.0.0 would have been successfully installed.
+  </p><p><br></p><p><strong>STEP 5 – Launch an Ipython Notebook and test.</strong></p><p>1.       Go to terminal window and type the following: jupyter notebook</p><p>2.       Open a new ipython notebook. By clicking new located near the top right of the screen (see red 1 below) and then under Notebooks, click on Python 2 (see red 2 below).</p><p><br></p><p><br></p><p>3.       When out notebook file loads, type the 3 following lines of code as shown in the image below.</p><p><br></p><pre class="prettyprint linenums">import cv2
+import numpy
+import matplotlib
+print("Packages successfully imported")</pre><p><br></p><p>4. If successful, you should see the statement “Packages successfully imported” as shown below:</p><p><br></p><h4></h4><h4>UPDATE: </h4><p>If the above methods fail which has been happening to a lot of students due to changes in OpenCV, Anaconda etc. Please try the following alternative methods:</p><p><br><br></p><ol><li><p>From terminal type and run the following.</p></li></ol><p><code>conda install -c https://conda.binstar.org/menpo opencv</code> </p><p>OR</p><p>2. Running a docker image with OpenCV 3.2 already pre-installed.</p><p><a href="https://hub.docker.com/r/waleedka/modern-deep-learning/" rel="noopener noreferrer" target="_blank">Instructions Found Here</a></p><p><br></p><p><br></p><p><br></p><p><em><br></em></p>

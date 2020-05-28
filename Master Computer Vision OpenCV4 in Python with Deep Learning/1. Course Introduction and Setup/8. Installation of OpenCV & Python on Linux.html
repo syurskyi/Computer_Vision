@@ -1,0 +1,234 @@
+<h4><strong>Installing OpenCV on Linux (Ubantu) 
+
+  </strong></h4>
+
+<h4></h4>
+
+
+
+
+
+
+
+<p>I’m going to assume Linux users don’t need to be spoon fed like OSX and Windows users, so this tutorial will be brief. However, if there's need for a more detailed procedure, please do not hesitate to ask.</p>
+
+
+
+
+
+
+
+<p> <strong class="redactor-inline-converted">STEP 1 - Install the Anaconda Python Package</strong> </p>
+
+
+
+
+
+
+
+<p>Optional - since you may already have python installed, if you do, please ensure you’re using Python 2.7 &amp; numpy 1.5+.</p>
+
+
+
+
+
+
+
+<p>1.       Go to: <u>https://www.continuum.io/downloads</u> 
+
+  </p>
+
+
+
+
+
+
+
+<p>2.       Select the Linux installer (choose python 2.7, we can use Python 3.5, however most python libraries are not yet compatible with python 2.7( 
+
+  </p>
+
+
+
+
+
+
+
+<p>3.       Follow the Installation instructions, should be pretty standard, however Continuum has a guide here: <u>https://docs.continuum.io/anaconda/install</u> 
+
+  </p>
+
+
+
+
+
+
+
+<p> 
+
+  </p>
+
+
+
+
+
+
+
+<h4><strong class="redactor-inline-converted">STEP 2 – Install OpenCV 3.0. (With contrib packages)</strong> </h4>
+
+
+
+
+
+
+
+<p>Enter these commands in the terminal window.  
+
+  </p>
+
+
+
+
+
+<pre class="prettyprint linenums">$ sudo apt-get update 
+$ sudo apt-get upgrade 
+$ sudo apt-get install build-essential   cmake git pkg-config 
+$ sudo apt-get install libjpeg8-dev   libtiff4-dev libjasper-dev libpng12-dev 
+$ sudo apt-get install libgtk2.0-dev 
+$ sudo apt-get install libavcodec-dev   libavformat-dev libswscale-dev libv4l-dev 
+$ sudo apt-get install   libatlas-base-dev gfortran 
+$ cd ~ 
+$ git clone   https://github.com/Itseez/opencv.git 
+$ cd opencv 
+$ git checkout 3.0.0 
+$ cd ~/opencv 
+$ mkdir build 
+$ cd build 
+$ cmake -D CMAKE_BUILD_TYPE=RELEASE \ 
+        -D   CMAKE_INSTALL_PREFIX=/usr/local \ 
+        -D   INSTALL_C_EXAMPLES=ON \ 
+        -D   INSTALL_PYTHON_EXAMPLES=ON \ 
+        -D   OPENCV_EXTRA_MODULES_PATH=~/opencv_contrib/modules \        -D   BUILD_EXAMPLES=ON .. 
+   
+$ make -j4
+$ sudo make install
+$ sudo ldconfig
+</pre>
+
+
+
+
+
+
+
+
+
+
+
+<p> 
+
+  </p>
+
+
+
+
+
+
+
+<h4><strong class="redactor-inline-converted">STEP 3 – Launch an Ipython Notebook and test</strong></h4>
+
+
+
+
+
+
+
+<p>1.       Go to terminal window and type the following: jupyter notebook </p>
+
+<p>
+
+  2.       Open a new ipython notebook. By clicking new located near the top right of the screen (see red 1 below) and then under Notebooks, click on Python 2 (see red 2 below).</p>
+
+
+
+<p><br></p>
+
+
+
+
+
+
+
+
+
+<figure><img src="https://udemy-images.s3.amazonaws.com:443/redactor/2016-10-11_15-48-03-1d0cc8794082b609a447800bb3b4ab71/ipython.png"></figure>
+
+
+
+
+
+
+
+<p><em class="redactor-inline-converted">3.       When out notebook file loads, type the 3 following lines of code as shown in the image below.</em></p>
+
+<figure><img src="https://udemy-images.s3.amazonaws.com:443/redactor/2016-10-11_15-48-59-599d8d68bd2fe2c073f588acf40f0004/2ipyth.JPG"></figure>
+
+<p><em class="redactor-inline-converted"><em class="redactor-inline-converted"><br></em></em></p>
+
+
+
+
+
+
+
+<pre class="prettyprint linenums">import cv
+import numpy
+import matplotlib 
+print("Packages successfully imported") 
+</pre>
+
+
+
+
+
+
+
+<p><br></p>
+
+<p>Then press <strong class="redactor-inline-converted">CMD+ENT</strong> together to run.</p>
+
+
+
+
+
+
+
+<p><em>4.       </em>If successful, you should see the statement “Packages successfully imported” as shown below: 
+
+  </p>
+
+
+
+
+
+
+
+
+
+<figure><img src="https://udemy-images.s3.amazonaws.com:443/redactor/2016-10-11_15-49-57-f5983079d4962d778f84196717800526/3ip.JPG"></figure>
+
+<p><em class="redactor-inline-converted"><br></em></p>
+
+
+
+
+
+
+
+<p><br></p>
+
+<p><br></p>
+
+
+
+<p><em class="redactor-inline-converted"><em class="redactor-inline-converted"><em class="redactor-inline-converted"><br></em></em></em></p>
