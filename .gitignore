@@ -117,3 +117,11 @@ fabric.properties
 /Master Computer Vision OpenCV4 in Python with Deep Learning/17. BONUS - Build a Credit Card Number Reader/Credit-Card Number Identification/
 /Master Computer Vision OpenCV4 in Python with Deep Learning/18. BONUS - Neural Style Transfer with OpenCV/art/
 /Master Computer Vision OpenCV4 in Python with Deep Learning/18. BONUS - Neural Style Transfer with OpenCV/models/
+/Master Computer Vision OpenCV4 in Python with Deep Learning/19. BONUS - Object Detection - Use SSDs (Single Shot Detector) for Detecting Objects/MobileNetSSD_deploy.caffemodel
+/Master Computer Vision OpenCV4 in Python with Deep Learning/19. BONUS - Object Detection - Use SSDs (Single Shot Detector) for Detecting Objects/frozen_inference_graph.pb
+/Master Computer Vision OpenCV4 in Python with Deep Learning/19. BONUS - Object Detection - Use SSDs (Single Shot Detector) for Detecting Objects/model.ckpt.data-00000-of-00001
+/Master Computer Vision OpenCV4 in Python with Deep Learning/19. BONUS - Object Detection - Use SSDs (Single Shot Detector) for Detecting Objects/ssd_mobilenet_v1_coco.pbtxt
+/Master Computer Vision OpenCV4 in Python with Deep Learning/19. BONUS - Object Detection - Use SSDs (Single Shot Detector) for Detecting Objects/model.ckpt.index
+/Master Computer Vision OpenCV4 in Python with Deep Learning/19. BONUS - Object Detection - Use SSDs (Single Shot Detector) for Detecting Objects/graph.pbtxt
+/Master Computer Vision OpenCV4 in Python with Deep Learning/19. BONUS - Object Detection - Use SSDs (Single Shot Detector) for Detecting Objects/MobileNetSSD_deploy.prototxt
+/Master Computer Vision OpenCV4 in Python with Deep Learning/19. BONUS - Object Detection - Use SSDs (Single Shot Detector) for Detecting Objects/model.ckpt.meta
