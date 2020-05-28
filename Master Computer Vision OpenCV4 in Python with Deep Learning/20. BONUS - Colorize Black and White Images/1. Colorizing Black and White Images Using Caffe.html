@@ -1,0 +1,119 @@
+<h4><strong>Colorizing Black and White Images </strong></h4><h4></h4><p>Colorizing black and white images is an amazingly useful and incredible technique achieved by deep learning. </p><p><br></p><p><strong>Colorful Image Colorization</strong> <br></p><p><a href="https://richzhang.github.io/" rel="noopener noreferrer" target="_blank">Richard Zhang</a>, <a href="http://web.mit.edu/phillipi/" rel="noopener noreferrer" target="_blank">Phillip Isola</a>, <a href="http://www.eecs.berkeley.edu/~efros/" rel="noopener noreferrer" target="_blank">Alexei A. Efros</a>. In <a href="http://arxiv.org/pdf/1603.08511.pdf" rel="noopener noreferrer" target="_blank">ECCV, 2016</a>.</p><p><a href="https://camo.githubusercontent.com/0f54d76e1561911ef2c423251c386a9368551365/687474703a2f2f726963687a68616e672e6769746875622e696f2f636f6c6f72697a6174696f6e2f7265736f75726365732f696d616765732f746561736572342e6a7067" rel="noopener noreferrer" target="_blank"><img alt="Teaser Image" src="https://camo.githubusercontent.com/0f54d76e1561911ef2c423251c386a9368551365/687474703a2f2f726963687a68616e672e6769746875622e696f2f636f6c6f72697a6174696f6e2f7265736f75726365732f696d616765732f746561736572342e6a7067"></a></p><p><br></p><p>To implement this using OpenCV, download the code and files in the resources, you'll need the Caffe model files that be can loaded into OpenCV:</p><ul><li><p>colorization_deploy_v2.prototext</p></li><li><p>colorization_release_v2.caffe</p></li><li><p>pts_in_hull.npy</p></li></ul><p>The code for this project is as follows:</p><pre class="prettyprint linenums">import cv2
+import numpy as np
+from os import listdir
+from os.path import isfile, join
+
+# Get our images
+file_path = "./blackandwhite/"
+blackandwhite_imgs = [f for f in listdir(file_path) if isfile(join(file_path, f))]
+
+# Start the main program
+if __name__ == '__main__':
+
+    # Select desired model
+    net = cv2.dnn.readNetFromCaffe("colorization_deploy_v2.prototxt",
+                               "colorization_release_v2.caffemodel")
+
+    # load cluster centers
+    pts_in_hull = np.load(kernel) 
+
+    # populate cluster centers as 1x1 convolution kernel
+    pts_in_hull = pts_in_hull.transpose().reshape(2, 313, 1, 1)
+    net.getLayer(net.getLayerId('class8_ab')).blobs = [pts_in_hull.astype(np.float32)]
+    net.getLayer(net.getLayerId('conv8_313_rh')).blobs = [np.full([1, 313], 2.606, np.float32)]
+
+    for image in blackandwhite_imgs:
+        img = cv2.imread(file_path+image)
+        
+        img_rgb = (img[:,:,[2, 1, 0]] * 1.0 / 255).astype(np.float32)
+        img_lab = cv2.cvtColor(img_rgb, cv2.COLOR_BGR2LAB)
+        
+        # pull out L channel
+        img_l = img_lab[:,:,0]
+        # get original image size
+        (H_orig,W_orig) = img_rgb.shape[:2] 
+
+        # resize image to network input size
+        img_rs = cv2.resize(img_rgb, (224, 224)) 
+        
+        # resize image to network input size
+        img_lab_rs = cv2.cvtColor(img_rs, cv2.COLOR_RGB2Lab)
+        img_l_rs = img_lab_rs[:,:,0]
+        
+        # subtract 50 for mean-centering
+        img_l_rs -= 50 
+
+        net.setInput(cv2.dnn.blobFromImage(img_l_rs))
+        
+        # this is our result
+        ab_dec = net.forward('class8_ab')[0,:,:,:].transpose((1,2,0)) 
+
+        (H_out,W_out) = ab_dec.shape[:2]
+        ab_dec_us = cv2.resize(ab_dec, (W_orig, H_orig))
+        img_lab_out = np.concatenate((img_l[:,:,np.newaxis],ab_dec_us),axis=2) 
+        
+        # concatenate with original image L
+        img_bgr_out = np.clip(cv2.cvtColor(img_lab_out, cv2.COLOR_Lab2BGR), 0, 1)
+
+        # show original image
+        cv2.imshow('Original', img)
+        # Resize the corlized image to it's orginal dimensions 
+        img_bgr_out = cv2.resize(img_bgr_out, (W_orig, H_orig), interpolation = cv2.INTER_AREA)
+        cv2.imshow('Colorized', img_bgr_out)
+        cv2.waitKey(0)
+        if cv2.waitKey(1) &gt;= 0:
+            break
+                      
+cv2.destroyAllWindows()</pre><p><strong>This can also be done using your webcam (as well as any old black and white video)</strong></p><pre class="prettyprint linenums">import cv2
+
+kernel = 'pts_in_hull.npy'
+
+if __name__ == '__main__':
+    imshowSize = (640, 480)
+
+    # Select desired model
+    net = cv2.dnn.readNetFromCaffe("colorization_deploy_v2.prototxt", "colorization_release_v2.caffemodel")
+
+    pts_in_hull = np.load(kernel) # load cluster centers
+
+    # populate cluster centers as 1x1 convolution kernel
+    pts_in_hull = pts_in_hull.transpose().reshape(2, 313, 1, 1)
+    net.getLayer(net.getLayerId('class8_ab')).blobs = [pts_in_hull.astype(np.float32)]
+    net.getLayer(net.getLayerId('conv8_313_rh')).blobs = [np.full([1, 313], 2.606, np.float32)]
+
+    cap = cv2.VideoCapture(0)
+
+    while cv2.waitKey(1) &lt; 0:
+        hasFrame, frame = cap.read()
+        if not hasFrame:
+            cv2.waitKey()
+
+        img_rgb = (frame[:,:,[2, 1, 0]] * 1.0 / 255).astype(np.float32)
+        img_lab = cv2.cvtColor(img_rgb, cv2.COLOR_BGR2LAB)
+        img_l = img_lab[:,:,0] # pull out L channel
+        (H_orig,W_orig) = img_rgb.shape[:2] # original image size
+
+        # resize image to network input size
+        img_rs = cv2.resize(img_rgb, (224, 224)) # resize image to network input size
+        img_lab_rs = cv2.cvtColor(img_rs, cv2.COLOR_RGB2Lab)
+        img_l_rs = img_lab_rs[:,:,0]
+        img_l_rs -= 50 # subtract 50 for mean-centering
+
+        net.setInput(cv2.dnn.blobFromImage(img_l_rs))
+        ab_dec = net.forward('class8_ab')[0,:,:,:].transpose((1,2,0)) # this is our result
+
+        (H_out,W_out) = ab_dec.shape[:2]
+        ab_dec_us = cv2.resize(ab_dec, (W_orig, H_orig))
+        img_lab_out = np.concatenate((img_l[:,:,np.newaxis],ab_dec_us),axis=2) # concatenate with original image L
+        img_bgr_out = np.clip(cv2.cvtColor(img_lab_out, cv2.COLOR_Lab2BGR), 0, 1)
+
+        frame = cv2.resize(frame, imshowSize)
+        cv2.imshow('origin', frame)
+        cv2.imshow('gray', cv2.cvtColor(frame, cv2.COLOR_RGB2GRAY))
+        cv2.imshow('colorized', cv2.resize(img_bgr_out, imshowSize))
+        if cv2.waitKey(1) &gt;= 0:
+            break
+            
+cap.release()            
+cv2.destroyAllWindows()
+</pre><p>Note the source of the files:</p><ul><li><p># Script is based on https://github.com/richzhang/colorization/blob/master/colorize.py</p></li><li><p># To download the caffemodel and the prototxt, see: https://github.com/richzhang/colorization/tree/master/models</p></li><li><p># To download pts_in_hull.npy, see: https://github.com/richzhang/colorization/blob/master/resources/pts_in_hull.npy</p></li></ul>
