@@ -1,0 +1,95 @@
+<p><strong>Neural Style Transfer in OpenCV</strong></p><p><br></p><figure><img height="319" src="https://udemy-images.s3.amazonaws.com:443/redactor/raw/2019-04-24_03-13-22-806281f8b9ac0aca023037f0f32145a7.JPG" width="372"></figure><p><strong>About Neural Style Transfers</strong></p><ul><li><p>Introduced by Leon Gatys et al. in 2015, in their paper titled <a href="https://arxiv.org/abs/1508.06576" rel="noopener noreferrer" target="_blank"><em>“A Neural Algorithm for Artistic Style”</em></a>, the Neural Style Transfer algorithm went viral resulting in an explosion of further work and mobile apps.</p></li><li><p><strong>Neural Style Transfer </strong>enables the <strong>artistic style </strong>of an image to be applied to another image! It copies the color patterns, combinations and brush strokes of the original source image and applies it to your input image. And is one the most impressive implementations of Neural Networks in my opinion.</p></li></ul><p><strong>DOWNLOAD the code in the resources section</strong></p><p><br></p><h4><strong>Using OpenCV's dnn.blobFromImage to perform Neural Style Transfer on an input image</strong></h4><pre class="prettyprint linenums">from os import listdir
+from os.path import isfile, join
+import cv2
+
+# Load our t7 neural transfer models
+model_file_path = "./models/"
+model_file_paths = [f for f in listdir(model_file_path) if isfile(join(model_file_path, f))]
+
+# Load our test image
+img = cv2.imread("images/n2.jpg")
+
+# Loop through and applying each model style our input image
+for (i,model) in enumerate(model_file_paths):
+    # print the model being used
+    print(str(i+1) + ". Using Model: " + str(model)[:-3])    
+    style = cv2.imread("./art/"+str(model)[:-3]+".jpg")
+    # loading our neural style transfer model 
+    neuralStyleModel = cv2.dnn.readNetFromTorch(model_file_path+ model)
+
+    # Let's resize to a fixed height of 640 (feel free to change)
+    height, width = int(img.shape[0]), int(img.shape[1])
+    newWidth = int((640 / height) * width)
+    resizedImg = cv2.resize(img, (newWidth, 640), interpolation = cv2.INTER_AREA)
+
+    # Create our blob from the image and then perform a forward pass run of the network
+    inpBlob = cv2.dnn.blobFromImage(resizedImg, 1.0, (newWidth, 640),
+                               (103.939, 116.779, 123.68), swapRB=False, crop=False)
+
+    neuralStyleModel.setInput(inpBlob)
+    output = neuralStyleModel.forward()
+
+    # Reshaping the output tensor, adding back  the mean subtraction 
+    # and re-ordering the channels 
+    output = output.reshape(3, output.shape[2], output.shape[3])
+    output[0] += 103.939
+    output[1] += 116.779
+    output[2] += 123.68
+    output /= 255
+    output = output.transpose(1, 2, 0)
+    
+    #Display our original image, the style being applied and the final Neural Style Transfer
+    cv2.imshow("Original", img)
+    cv2.imshow("Style", style)
+    cv2.imshow("Neural Style Transfers", output)
+    cv2.waitKey(0)
+
+cv2.destroyAllWindows()</pre><p><br></p><h4><strong>Using the same method on our Webcam Input</strong></h4><pre class="prettyprint linenums">import cv2
+import numpy as np
+
+# Our sketch generating function
+def NeuralStyleTransfer(img, model, size = 320, upscale = 1):
+    
+    model_file_path = "./models/" 
+    style = cv2.imread("./art/"+str(model)[:-3]+".jpg")
+    # loading our neural style transfer model 
+    neuralStyleModel = cv2.dnn.readNetFromTorch(model_file_path+ model+".t7")
+
+    # Let's resize to a fixed height of 640 (feel free to change)
+    height, width = int(img.shape[0]), int(img.shape[1])
+    newWidth = int((size / height) * width)
+    resizedImg = cv2.resize(img, (newWidth, size), interpolation = cv2.INTER_AREA)
+
+    # Create our blob from the image and then perform a forward pass run of the network
+    inpBlob = cv2.dnn.blobFromImage(resizedImg, 1.0, (newWidth, size),
+                               (103.939, 116.779, 123.68), swapRB=False, crop=False)
+
+    neuralStyleModel.setInput(inpBlob)
+    output = neuralStyleModel.forward()
+
+    # Reshaping the output tensor, adding back  the mean subtraction 
+    # and re-ordering the channels 
+    output = output.reshape(3, output.shape[2], output.shape[3])
+    output[0] += 103.939
+    output[1] += 116.779
+    output[2] += 123.68
+    output /= 255
+    output = output.transpose(1, 2, 0)
+    output = cv2.resize(output, None, fx=upscale, fy=upscale, interpolation = cv2.INTER_LINEAR)
+    return output
+
+
+# Initialize webcam, cap is the object provided by VideoCapture
+cap = cv2.VideoCapture(0)
+
+# la_muse, feathers, composition_vii, mosaic, the_scream, udnie, starry_night, candy, the_wave
+
+while True:
+    ret, frame = cap.read()
+    cv2.imshow('Neural Style Transfers', NeuralStyleTransfer(frame, "mosaic", 320, 2))
+    if cv2.waitKey(1) == 13: #13 is the Enter Key
+        break
+        
+# Release camera and close windows
+cap.release()
+cv2.destroyAllWindows()      </pre>
