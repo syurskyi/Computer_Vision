@@ -111,3 +111,4 @@ fabric.properties
 # Android studio 3.1+ serialized cache file
 .idea/caches/build_file_checksums.ser
 
+/Master Computer Vision OpenCV4 in Python with Deep Learning/10. Computational Photography & Make a License Plate Reader/images/
