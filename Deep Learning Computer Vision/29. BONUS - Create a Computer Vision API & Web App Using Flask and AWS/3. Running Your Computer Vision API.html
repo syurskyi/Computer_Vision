@@ -1,0 +1,76 @@
+<h4><strong>Our Flask API Template Code </strong></h4><p><br></p><p>In the previous chapter, we created a Web App that's accessible via the web browser. Pretty cool! but what if we wanted to call this API from different Apps e.g. a Native Android or iOS App?</p><p><br>Let's turn it into RESTful API that returns simple JSON responses encapsulating the results. </p><p><strong>NOTE</strong>: A <strong>RESTful API</strong> is an application program interface (<strong>API</strong>) that uses HTTP requests to GET, PUT, POST and DELETE data.</p><p><br></p><p><strong>Step 1: </strong>Firstly, install <strong>Postman </strong>to test our API </p><ul><li><p>Windows/Max - <a href="https://www.getpostman.com/downloads/" rel="noopener noreferrer" target="_blank">Download and install here </a></p></li><li><p>Ubuntu Users - Launch Ubuntu Software and Install </p></li></ul><figure><img src="https://udemy-images.s3.amazonaws.com:443/redactor/raw/2019-04-23_06-16-17-a75ad1a8a678b5837139fcab17cd4f6f.JPG"></figure><p><strong>Step 2: </strong>Our Flask API Code</p><pre class="prettyprint linenums">import os
+from flask import Flask, flash, request, redirect, url_for, jsonify
+from werkzeug.utils import secure_filename
+import cv2
+import numpy as np
+import keras
+from keras.models import load_model
+from keras import backend as K
+
+UPLOAD_FOLDER = './uploads/'
+ALLOWED_EXTENSIONS = set(['png', 'jpg', 'jpeg'])
+DEBUG = True
+app = Flask(__name__)
+app.config.from_object(__name__)
+app.config['SECRET_KEY'] = '7d441f27d441f27567d441f2b6176a'
+app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
+
+def allowed_file(filename):
+	return '.' in filename and \
+		   filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
+
+@app.route('/', methods=['GET', 'POST'])
+def upload_file():
+	if request.method == 'POST':
+		# check if the post request has the file part
+		if 'file' not in request.files:
+			flash('No file part')
+			return redirect(request.url)
+		file = request.files['file']
+		# if user does not select file, browser also
+		# submit an empty part without filename
+		if file.filename == '':
+			flash('No selected file')
+			return redirect(request.url)
+		if file and allowed_file(file.filename):
+			filename = secure_filename(file.filename)
+			file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
+			image = cv2.imread(os.path.dirname(os.path.realpath(__file__))+"/uploads/"+filename)
+			color_result = getDominantColor(image)
+			dogOrCat = catOrDog(image)
+			#return redirect(url_for('upload_file',filename=filename)), jsonify({"key":
+			return jsonify({"MainColor": color_result, "catOrDog": dogOrCat} )
+	return '''
+	&lt;!doctype html&gt;
+	&lt;title&gt;API&lt;/title&gt;
+	&lt;h1&gt;API Running Successfully&lt;/h1&gt;'''
+
+def catOrDog(image):
+	'''Determines if the image contains a cat or dog'''
+	classifier = load_model('./models/cats_vs_dogs_V1.h5')
+	image = cv2.resize(image, (150,150), interpolation = cv2.INTER_AREA)
+	image = image.reshape(1,150,150,3) 
+	res = str(classifier.predict_classes(image, 1, verbose = 0)[0][0])
+	print(res)
+	print(type(res))
+	if res == "0":
+		res = "Cat"
+	else:
+		res = "Dog"
+	K.clear_session()
+	return res
+
+def getDominantColor(image):
+	'''returns the dominate color among Blue, Green and Reds in the image '''
+	B, G, R = cv2.split(image)
+	B, G, R = np.sum(B), np.sum(G), np.sum(R)
+	color_sums = [B,G,R]
+	color_values = {"0": "Blue", "1":"Green", "2": "Red"}
+	return color_values[str(np.argmax(color_sums))]
+
+
+if __name__ == "__main__":
+	app.run()</pre><figure><img src="https://udemy-images.s3.amazonaws.com:443/redactor/raw/2019-04-23_00-48-49-5db46541ad63d65d835cdd569211c973.JPG"></figure><p><strong>Using Postman (see image above and the corresponding numbered steps below:</strong></p><ol><li><p>Change the protocol to POST</p></li><li><p>Enter the local host address: http://127.0.0.1:5000/</p></li><li><p>Change Tab to Body</p></li><li><p>Select the form-data radio button</p></li><li><p>From the drop-down, select Key type to be file</p></li><li><p>For Value, select one of our test images</p></li><li><p>Click send to send our image to our API</p></li><li><p>Our response will be shown in the window below.</p></li></ol><p>The output is JSON file containing:</p><pre class="prettyprint linenums">{
+    "MainColor": "Red",
+    "catOrDog": "Cat"
+}</pre><p>The cool thing about using Postman is that we can generate the code to call this API in several different languages:</p><p>See blue box to bring up the code box:</p><figure><img src="https://udemy-images.s3.amazonaws.com:443/redactor/raw/2019-04-23_00-54-19-04fa84ce24394a4b9df2347dee6ac632.jpg"></figure><p>Code Generator</p><figure><img src="https://udemy-images.s3.amazonaws.com:443/redactor/raw/2019-04-23_00-55-22-1aaeea8249c6c70d464a1ece0466b273.JPG"></figure><p><strong>Now that you've got your Flask API and Web App working, let's look at deploying this on AWS using an EC2 Instance.</strong></p>

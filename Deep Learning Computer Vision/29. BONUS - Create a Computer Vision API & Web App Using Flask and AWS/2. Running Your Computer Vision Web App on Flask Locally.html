@@ -1,0 +1,86 @@
+<h4><strong>Our Flask WebApp Template Code </strong></h4><p><br></p><p>In the previous chapter we created a simple Hello World app. We're now going create a simple App that does the following:</p><ul><li><p>Allows you to upload an image</p></li><li><p>Uses OpenCV and Keras to do some operations on the image</p></li><li><p>Returns the outputs of our operations to the user</p></li></ul><p>We'll be making a simple App that users OpenCV to find the dominant color (Red vs Green vs Blue) and determines whether the animal in the picture is a Cat or Dog.</p><p><br></p><p><strong>Our Web App 1:</strong></p><figure><img src="https://udemy-images.s3.amazonaws.com:443/redactor/raw/2019-04-22_23-58-35-80e8fa501f933728e7f9ed8d002e9713.JPG"></figure><p><strong>Our Web App 2:</strong></p><figure><img src="https://udemy-images.s3.amazonaws.com:443/redactor/raw/2019-04-22_23-59-43-e3f4f1bffc29b2e9a51a7a354e9d87ac.JPG"></figure><p><strong>Our Web App 3:</strong></p><figure><img height="261" src="https://udemy-images.s3.amazonaws.com:443/redactor/raw/2019-04-22_23-58-35-170c078ea8cbb82743a7f77bbaf78b6a.JPG" width="434"></figure><p><strong>Our Web App 4:</strong></p><figure><img src="https://udemy-images.s3.amazonaws.com:443/redactor/raw/2019-04-22_23-58-35-98e72167229d356fe6e3429e79a43e33.JPG"></figure><p><br></p><h4><strong>NOTE</strong>: Download the code in the resources section</h4><p>The code for our web app is as follows:</p><pre class="prettyprint linenums">import os
+from flask import Flask, flash, request, redirect, url_for, jsonify
+from werkzeug.utils import secure_filename
+import cv2
+import keras
+import numpy as np
+from keras.models import load_model
+from keras import backend as K
+
+UPLOAD_FOLDER = './uploads/'
+ALLOWED_EXTENSIONS = set(['png', 'jpg', 'jpeg'])
+DEBUG = True
+app = Flask(__name__)
+app.config.from_object(__name__)
+app.config['SECRET_KEY'] = '7d441f27d441f27567d441f2b6176a'
+app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
+
+def allowed_file(filename):
+	return '.' in filename and \
+		   filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
+
+@app.route('/', methods=['GET', 'POST'])
+def upload_file():
+	if request.method == 'POST':
+		# check if the post request has the file part
+		if 'file' not in request.files:
+			flash('No file part')
+			return redirect(request.url)
+		file = request.files['file']
+		if file.filename == '':
+			flash('No selected file')
+			return redirect(request.url)
+		if file and allowed_file(file.filename):
+			filename = secure_filename(file.filename)
+			file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
+			image = cv2.imread(os.path.dirname(os.path.realpath(__file__))+"/uploads/"+filename)
+			color_result = getDominantColor(image)
+			result = catOrDog(image)
+			redirect(url_for('upload_file',filename=filename))
+			return '''
+			&lt;!doctype html&gt;
+			&lt;title&gt;Results&lt;/title&gt;
+			&lt;h1&gt;Image contains a - '''+result+'''&lt;/h1&gt;
+			&lt;h2&gt;Dominant color is - '''+color_result+'''&lt;/h2&gt;
+			&lt;form method=post enctype=multipart/form-data&gt;
+			  &lt;input type=file name=file&gt;
+			  &lt;input type=submit value=Upload&gt;
+			&lt;/form&gt;
+			'''
+	return '''
+	&lt;!doctype html&gt;
+	&lt;title&gt;Upload new File&lt;/title&gt;
+	&lt;h1&gt;Upload new File&lt;/h1&gt;
+	&lt;form method=post enctype=multipart/form-data&gt;
+	  &lt;input type=file name=file&gt;
+	  &lt;input type=submit value=Upload&gt;
+	&lt;/form&gt;
+	'''
+
+def catOrDog(image):
+	'''Determines if the image contains a cat or dog'''
+	classifier = load_model('./models/cats_vs_dogs_V1.h5')
+	image = cv2.resize(image, (150,150), interpolation = cv2.INTER_AREA)
+	image = image.reshape(1,150,150,3) 
+	res = str(classifier.predict_classes(image, 1, verbose = 0)[0][0])
+	print(res)
+	print(type(res))
+	if res == "0":
+		res = "Cat"
+	else:
+		res = "Dog"
+	K.clear_session()
+	return res
+
+def getDominantColor(image):
+	'''returns the dominate color among Blue, Green and Reds in the image '''
+	B, G, R = cv2.split(image)
+	B, G, R = np.sum(B), np.sum(G), np.sum(R)
+	color_sums = [B,G,R]
+	color_values = {"0": "Blue", "1":"Green", "2": "Red"}
+	return color_values[str(np.argmax(color_sums))]
+	
+if __name__ == "__main__":
+	app.run()
+
+</pre><p>Running our web app in Terminal (or Command Prompt, it should be exactly the same). </p><figure><img src="https://udemy-images.s3.amazonaws.com:443/redactor/raw/2019-04-23_00-01-02-ece80015f52c109880a2dcb76dfeede8.JPG"></figure><p><br></p><p><strong>Brief Code Description:</strong></p><p><strong>Lines 1 to 8:</strong> Importing our flask functions and other relevant functions/Libraries we'll be using in this program such as <em>werkzeug, keras, numpy </em>and <em>opencv</em></p><p><strong>Line 10 to 16: </strong>Defining our paths, allowed files and setting our Flask Parameters. Look up the Flask documentation to better understand</p><p><strong>Line 18 to 10:</strong> Our 'allowed files function', it simply checks the extension of the selected file to ensure only images are uploaded.</p><p><strong>Line 22:</strong> The route() function of Flask. It is a decorator that tells the Application which URL should call the associated function.</p><p><strong>Line 23 to 58:</strong> Our main function, it results to both GET or POST Requests. These are HTTP methods that form the basis of data communication over the internet. GET Sends data in unencrypted form to the server. Most common method. POS is used to send HTML form data to the server. Data received by POST method is not cached by the server. We're using an unconventional method of serving the HTML to our client Typically Flask apps used templates stored in a Templates folder which contains our HTML. However, this is a simple web app and it's better for your understanding if we server the HTML like this. Note we have two blocks of code, one is the default HTML used prompting the user to upload an image. The second block sends the response to the user. </p><p><strong>Line 60 to 73: </strong>This is our Cats vs Dogs function that takes an image and outputs a string stating which animal is found in the image, either "Cat" or "Dog".</p><p><strong>Line 75 to 81: </strong>This function sums all the Blue, Green and Red color components of an image and returns the color with the largest sum. </p><p><strong>Line 83 to 84:</strong> Our main code that runs the Flask app by calling the app.run() function. </p><p><br></p><p><strong>Our Folder Setup:</strong></p><p><code>MyFlaskProjects/</code></p><p><code>------Models/ </code>(where our Keras catsvsdogs.h5 is stored)</p><p><code>------Uploads/</code> (where our uploaded files are stored)</p><p><code>------webapp.py</code> </p><p><br></p><p>Feel free to experiment with different images! Let's now move on to a variation of this code that acts as a standalone API.</p>

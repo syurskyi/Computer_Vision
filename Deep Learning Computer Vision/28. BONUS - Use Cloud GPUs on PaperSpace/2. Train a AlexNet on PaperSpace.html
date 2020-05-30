@@ -1,0 +1,100 @@
+<h4><strong>Training  AlexNet on the CIFAR10 Dataset</strong></h4><p><br></p><p>Upon clicking start from our previous section, we'll now be greeted with this screen:</p><figure><img src="https://udemy-images.s3.amazonaws.com:443/redactor/raw/2019-04-18_05-55-38-8807e87ad20b67082d7a81ddc676a32c.JPG"></figure><p>Looks a fairly harmless Notebook, but this cloud system will allow us to training AlexNet almost 100X faster!</p><p>But first, let's explore our new PaperSpace Gradient Notebook.</p><p>Observe the two directories that are setup (see above) by the PaperSpace Gradient system:</p><ul><li><p><strong>datasets </strong>- contains some common datasets some of which you'd recognize from earlier in our course, these are there as test data to check performance of new CNNs or even to aid in transfer learning etc. (See below for a screenshot)</p></li><li><p><strong>storage </strong>- This is where you'd preferably want to keep files (ipynb notebooks and data) (see below)</p></li></ul><p><strong>Datasets </strong></p><figure><img src="https://udemy-images.s3.amazonaws.com:443/redactor/raw/2019-04-18_05-59-00-9a7284073358f7814397a6c36cbc5b14.JPG"></figure><p><strong>Storage</strong></p><figure><img src="https://udemy-images.s3.amazonaws.com:443/redactor/raw/2019-04-18_05-59-47-7b0b7bf1bfbe814402932a98f2b1ab1a.png"></figure><p><strong>Note</strong>: data stored in the storage folder is persistent across all gradient machines in your account.</p><p>Data saved in the main workspace area (i.e. the default directory which is /home/paperspace) will be lost when your terminate the session - do not save important files there or they will be lost!</p><p><strong>lost+found</strong> can be ignored as it's a directory created in Unix systems where corrupted data is temporarily stored (if you do lose files it's possible they maybe stored there)</p><p><br></p><p><strong>There are two easy ways to use PaperSpace Gradients</strong></p><p>1. Go to the <strong>storage </strong>directory Click on New and....</p><figure><img src="https://udemy-images.s3.amazonaws.com:443/redactor/raw/2019-04-18_06-06-40-9cfc7503e060112e2a3ac23fd1eb21a0.png"></figure><p>Start a new Python3 notebook</p><figure><img src="https://udemy-images.s3.amazonaws.com:443/redactor/raw/2019-04-18_06-07-19-a39201c771b5bf3630df8ac67a936b53.JPG"></figure><p>This launches a new python3 notebook where you can import Keras, TensorFlow etc and use just like you do on your local machine or Virtual Machine. Except we're now taking advantage of their lightening quick GPUs! Feel free to copy and paste your existing code into these notebooks.</p><figure><img src="https://udemy-images.s3.amazonaws.com:443/redactor/raw/2019-04-18_06-09-34-9d435dac8a1c8f5da9db5454054de554.JPG"></figure><h4><strong>OR</strong></h4><p>2. Upload your existing notebooks and datasets by using the Upload button. (see resources for AlexNet CIFAR10 .ipynb)</p><figure><img src="https://udemy-images.s3.amazonaws.com:443/redactor/raw/2019-04-18_06-10-04-b5db0ae7ef26b044b83e1fcf1b986c00.png"></figure><p><strong>It's that simple!</strong></p><p><br></p><h4><strong>Now let's try our AlexNet CIFAR10 CNN</strong></h4><p><br></p><p>Either upload the notebook in the attached resources or copy and paste this code into </p><p><br></p><pre class="prettyprint linenums">#Keras Imports and Loading Our CIFAR10 Dataset
+from __future__ import print_function
+import keras
+from keras.datasets import cifar10
+from keras.preprocessing.image import ImageDataGenerator
+from keras.models import Sequential
+from keras.layers import Dense, Dropout, Activation, Flatten
+from keras.layers import Conv2D, MaxPooling2D, ZeroPadding2D
+from keras.layers.normalization import BatchNormalization
+from keras.regularizers import l2
+
+# Loads the CIFAR dataset
+(x_train, y_train), (x_test, y_test) = cifar10.load_data()
+
+# Display our data shape/dimensions
+print('x_train shape:', x_train.shape)
+print(x_train.shape[0], 'train samples')
+print(x_test.shape[0], 'test samples')
+
+# Now we one hot encode outputs
+num_classes = 10
+y_train = keras.utils.to_categorical(y_train, num_classes)
+y_test = keras.utils.to_categorical(y_test, num_classes)</pre><p><br></p><pre class="prettyprint linenums">#Defining our AlexNet Convolutional Neural Network
+l2_reg = 0
+
+
+# Initialize model
+model = Sequential()
+
+# 1st Conv Layer 
+model.add(Conv2D(96, (11, 11), input_shape=x_train.shape[1:],
+    padding='same', kernel_regularizer=l2(l2_reg)))
+model.add(BatchNormalization())
+model.add(Activation('relu'))
+model.add(MaxPooling2D(pool_size=(2, 2)))
+
+# 2nd Conv Layer 
+model.add(Conv2D(256, (5, 5), padding='same'))
+model.add(BatchNormalization())
+model.add(Activation('relu'))
+model.add(MaxPooling2D(pool_size=(2, 2)))
+
+# 3rd Conv Layer 
+model.add(ZeroPadding2D((1, 1)))
+model.add(Conv2D(512, (3, 3), padding='same'))
+model.add(BatchNormalization())
+model.add(Activation('relu'))
+model.add(MaxPooling2D(pool_size=(2, 2)))
+
+# 4th Conv Layer 
+model.add(ZeroPadding2D((1, 1)))
+model.add(Conv2D(1024, (3, 3), padding='same'))
+model.add(BatchNormalization())
+model.add(Activation('relu'))
+
+# 5th Conv Layer 
+model.add(ZeroPadding2D((1, 1)))
+model.add(Conv2D(1024, (3, 3), padding='same'))
+model.add(BatchNormalization())
+model.add(Activation('relu'))
+model.add(MaxPooling2D(pool_size=(2, 2)))
+
+# 1st FC Layer
+model.add(Flatten())
+model.add(Dense(3072))
+model.add(BatchNormalization())
+model.add(Activation('relu'))
+model.add(Dropout(0.5))
+
+# 2nd FC Layer
+model.add(Dense(4096))
+model.add(BatchNormalization())
+model.add(Activation('relu'))
+model.add(Dropout(0.5))
+
+# 3rd FC Layer
+model.add(Dense(num_classes))
+model.add(BatchNormalization())
+model.add(Activation('softmax'))
+
+print(model.summary())
+
+model.compile(loss = 'categorical_crossentropy',
+              optimizer = keras.optimizers.Adadelta(),
+              metrics = ['accuracy'])</pre><p><br></p><pre class="prettyprint linenums"># Training Parameters
+batch_size = 32
+epochs = 10
+
+history = model.fit(x_train, y_train,
+          batch_size=batch_size,
+          epochs=epochs,
+          validation_data=(x_test, y_test),
+          shuffle=True)
+
+model.save("./Models/CIFAR10_AlexNet_10_Epoch.h5")
+
+# Evaluate the performance of our trained model
+scores = model.evaluate(x_test, y_test, verbose=1)
+print('Test loss:', scores[0])
+print('Test accuracy:', scores[1])</pre><p><strong>Our Cloud GPU as trained almost 60-100X faster than our CPU!</strong></p><figure><img src="https://udemy-images.s3.amazonaws.com:443/redactor/raw/2019-04-18_07-36-41-b5a56c95d46e10a12f1ab13fbd1ea5bd.png"></figure><p>We've trained 10 EPOCHs are 80% Accuracy in just bout 45 minutes. A CPU only system that would have taken over well over 24 hours.</p><p><br></p><p><strong>Our Training Loss and Accuracy Graphs</strong></p><figure><img src="https://udemy-images.s3.amazonaws.com:443/redactor/raw/2019-04-18_07-44-07-a687596eb0b9344a5634548668ed7560.JPG"></figure><figure><img src="https://udemy-images.s3.amazonaws.com:443/redactor/raw/2019-04-18_07-44-07-bdd067ec83d59a05da0ad2399ed246ce.JPG"></figure>

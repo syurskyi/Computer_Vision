@@ -246,3 +246,41 @@ fabric.properties
 /Deep Learning Computer Vision/10. Data Augmentation Build a Cats vs Dogs Classifier/datasets/
 /Deep Learning Computer Vision/10. Data Augmentation Build a Cats vs Dogs Classifier/output/
 /Deep Learning Computer Vision/10. Data Augmentation Build a Cats vs Dogs Classifier/dog.jpeg
+/Deep Learning Computer Vision/12. Types of Optimizers, Learning Rates & Callbacks Build a Fruit Classifier/fruits-360/
+/Deep Learning Computer Vision/13. Batch Normalization & Build LeNet, AlexNet Build a FashionClothes Classifier/fashion_mnist/
+/Deep Learning Computer Vision/14. ImageNet in Keras - Advanced Image Classiers/images/
+/Deep Learning Computer Vision/15. Transfer Learning and Fine Tuning Build a Flower and Monkey Breed Classifier/monkey_breed/
+/Deep Learning Computer Vision/16. LittleVGG Build a Simpsons Character Classifier/simpsons/
+/Deep Learning Computer Vision/18. Deep Surveillance Build a Facial Emotion, Age & Gender Recognition System/rajeev.jpg
+/Deep Learning Computer Vision/18. Deep Surveillance Build a Facial Emotion, Age & Gender Recognition System/Haarcascades/
+/Deep Learning Computer Vision/18. Deep Surveillance Build a Facial Emotion, Age & Gender Recognition System/fer2013/
+/Deep Learning Computer Vision/19. Image Segmentation & Medical Imaging in U-Net Find Nuclei in Images/U_NET/
+/Deep Learning Computer Vision/22. Object Detection with YOLO/yolov2.weights
+/Deep Learning Computer Vision/23. DeepDream & Neural Style Transfers Make AI Generated Art/deepdream_outputs/
+/Deep Learning Computer Vision/23. DeepDream & Neural Style Transfers Make AI Generated Art/images/
+/Deep Learning Computer Vision/23. DeepDream & Neural Style Transfers Make AI Generated Art/style_transfer_results/
+/Deep Learning Computer Vision/24. Generative Adversarial Networks (GANs) Age Faces to 60+ Age with our Age-cGAN/24. Generative Networks (GANs)_/FAwIPCGAN/age/
+/Deep Learning Computer Vision/24. Generative Adversarial Networks (GANs) Age Faces to 60+ Age with our Age-cGAN/24. Generative Networks (GANs)_/FAwIPCGAN/checkpoints/
+/Deep Learning Computer Vision/24. Generative Adversarial Networks (GANs) Age Faces to 60+ Age with our Age-cGAN/24. Generative Networks (GANs)_/FAwIPCGAN/images/
+/Deep Learning Computer Vision/24. Generative Adversarial Networks (GANs) Age Faces to 60+ Age with our Age-cGAN/24. Generative Networks (GANs)_/images/
+/Deep Learning Computer Vision/24. Generative Adversarial Networks (GANs) Age Faces to 60+ Age with our Age-cGAN/24. Generative Networks (GANs)_/models/
+/Deep Learning Computer Vision/24. Generative Adversarial Networks (GANs) Age Faces to 60+ Age with our Age-cGAN/24. Generative Networks (GANs)_/gan.h5
+/Deep Learning Computer Vision/24. Generative Adversarial Networks (GANs) Age Faces to 60+ Age with our Age-cGAN/gan.h5
+/Deep Learning Computer Vision/24. Generative Adversarial Networks (GANs) Age Faces to 60+ Age with our Age-cGAN/models/
+/Deep Learning Computer Vision/24. Generative Adversarial Networks (GANs) Age Faces to 60+ Age with our Age-cGAN/IPCGAN/age/
+/Deep Learning Computer Vision/24. Generative Adversarial Networks (GANs) Age Faces to 60+ Age with our Age-cGAN/IPCGAN/checkpoints/
+/Deep Learning Computer Vision/24. Generative Adversarial Networks (GANs) Age Faces to 60+ Age with our Age-cGAN/IPCGAN/images/
+/Deep Learning Computer Vision/27. BONUS -  Build a Credit Card Number Reader/Credit-Card Number Identification/
+/Deep Learning Computer Vision/Trained Models/
+/Deep Learning Computer Vision/25. Face Recognition with VGGFace/2. Face Matching with VGGFace.html
+/Deep Learning Computer Vision/25. Face Recognition with VGGFace/1. Basic Face Recognition using LittleVGG CNN.html
+/Deep Learning Computer Vision/25. Face Recognition with VGGFace/3. Face Recognition using WebCam & Identifying Friends TV Show Characters in Video.html
+/Deep Learning Computer Vision/25. Face Recognition with VGGFace/vgg_face_weights.h5
+/Deep Learning Computer Vision/25. Face Recognition with VGGFace/25. Face Recognition/faces/
+/Deep Learning Computer Vision/25. Face Recognition with VGGFace/25. Face Recognition/friends/
+/Deep Learning Computer Vision/25. Face Recognition with VGGFace/25. Face Recognition/friends_faces/
+/Deep Learning Computer Vision/25. Face Recognition with VGGFace/25. Face Recognition/group_of_faces/
+!/Deep Learning Computer Vision/25. Face Recognition with VGGFace/25. Face Recognition/Haarcascades/
+/Deep Learning Computer Vision/25. Face Recognition with VGGFace/25. Face Recognition/Haarcascades/
+/Deep Learning Computer Vision/25. Face Recognition with VGGFace/25. Face Recognition/people/
+/Deep Learning Computer Vision/25. Face Recognition with VGGFace/25. Face Recognition/training_faces/
